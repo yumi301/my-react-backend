@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+ h2
+	{            
+	font-family: "微软雅黑"; 
+	font-size: 40px;
+	color:white;
+ 	}
+body {
+	background-image: url(background.jpg);
+	background-repeat: no-repeat;
+	background-size: cover;}	
+p{
+	font-family: "微软雅黑"; 
+	font-size: 20px;
+	color:white;
+}

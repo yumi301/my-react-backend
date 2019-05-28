@@ -1,13 +1,10 @@
 package com.MyReact.dao;
 
-import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.MyReact.domain.User;
@@ -15,60 +12,39 @@ import com.MyReact.domain.User;
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-	@Autowired
-	private SessionFactory sessionFactory;
+	@PersistenceContext
+	private EntityManager entityManger;
 
+	/**
+	 * EntityManger用法参考： https://stackoverflow.com/questions/43533691/required-a-bean-of-type-org-hibernate-sessionfactory-that-could-not-be-found/43537578
+	 */
 	@Override
 	public User getUser(int id) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		
-		Transaction tx = session.beginTransaction();
-		User user = (User) session.get(User.class, id);
-		
-		tx.commit();
-		return user;
+		return entityManger.find(User.class, id);
 	}
-	
+
 	@Override
 	public User getUserbyName(String userName) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction tx = session.beginTransaction();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.like("userName", userName));
-		List listusers = criteria.list();
-		tx.commit();
-		if(listusers.isEmpty()){
+		TypedQuery<User> result = entityManger.createQuery("select e from User e where userName=?", User.class);
+		result.setParameter(0, userName);
+		try {
+			return result.getSingleResult();
+		}
+		catch (NoResultException e) {
 			return null;
 		}
-		return (User) listusers.get(0);
 	}
-	
+
 	@Override
 	public User getUserbyEmail(String userEmail) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction tx = session.beginTransaction();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.like("userEmail", userEmail));
-		List listusers = criteria.list();
-		tx.commit();
-		if(listusers.isEmpty()){
-			return null;
-		}
-		return (User) listusers.get(0);
+		TypedQuery<User> result = entityManger.createQuery("select e from User e where userEmail=?", User.class);
+		result.setParameter(1, userEmail);
+		return result.getSingleResult();
 	}
 
 	@Override
 	public void addUser(User user) {
-		// TODO Auto-generated method stub
-		Session session = this.sessionFactory.getCurrentSession();
-		Transaction tx = session.beginTransaction();
-	     session.save(user);
-			tx.commit();
+		entityManger.persist(user);
 	}
-
-	
 
 }
