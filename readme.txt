@@ -4,6 +4,8 @@
 3、hibernate没有用SessionFactory执行sql，而是用EntityManager，参考：https://stackoverflow.com/questions/43533691/required-a-bean-of-type-org-hibernate-sessionfactory-that-could-not-be-found/43537578
 	EntityManager是springboot推荐的服务，它内部会调用hibernate访问数据库
 4、没有用servlet-context.xml配置web应用，用springboot约定的web目录结构，不需要做配置
+5、没有用hibernate.cfg.xml配置文件，直接在application.properties中配置数据库的地址、账户
+6、目前用的是mysql，如果要用其它数据库，需要修改application.properties。
 
 如何启动web服务器：
 1、执行工程根目录下面的start-springboot.launch文件即可。这个文件的右键菜单里面有debug as，二级菜单的第一个为“start-springboot”，点击这个"start-springboot"，就开始执行这个launch文件
